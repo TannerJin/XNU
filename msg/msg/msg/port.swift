@@ -25,6 +25,8 @@ public func mallocPortWith(context: UInt) -> mach_port_t? {
     return port
 }
 
-public func freePort(_ port: mach_port_t) {
-    mach_port_deallocate(mach_task_self_, port)
+@discardableResult
+public func freePort(_ port: mach_port_t, context: UInt) -> kern_return_t {
+    let ret = mach_port_destruct(mach_task_self_, port, -1, mach_port_context_t(context))
+    return ret
 }

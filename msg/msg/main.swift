@@ -10,17 +10,13 @@ import Foundation
 
 print("Hello, mach msg!")
 
-let pointer = malloc(0x20)
-defer {
-    free(pointer)
-}
-
-guard let localPort = mallocPortWith(context: UInt(bitPattern: pointer!)) else {
+guard let pointer = malloc(0x8), let localPort = mallocPortWith(context: UInt(bitPattern: pointer)) else {
     print("allocate port failure")
     exit(0)
 }
 defer {
-    freePort(localPort)
+    freePort(localPort, context: UInt(bitPattern: pointer))
+    free(pointer)
 }
 
 print("\nbegin =>:\n")
@@ -52,4 +48,3 @@ if msgRet.return != KERN_SUCCESS {
 }
 
 print("\nend")
-

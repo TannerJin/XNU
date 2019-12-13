@@ -10,6 +10,10 @@ import Foundation
 
 print("Hello, thread!")
 
+if let dbg = getDebugRegister() {
+    print(dbg.dr.1)
+}
+
 var a = 1
 
 ThreadDo {
