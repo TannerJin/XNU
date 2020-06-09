@@ -79,6 +79,7 @@ public func ThreadDo(block: @escaping SwiftMethod) {
     state_64[16] = 0x0                                             // rip #pc
     
     // 设置TSD(线程私有数据) ???
+//    state_64[20] = UInt64(stack_address)
     
     // 设置线程函数开始地址
     let _func_begin: ThreadStart = thread_start

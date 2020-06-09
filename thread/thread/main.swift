@@ -10,16 +10,12 @@ import Foundation
 
 print("Hello, thread!")
 
-if let dbg = getDebugRegister() {
-    print(dbg.dr.1)
-}
-
 var a = 1
 
 ThreadDo {
     a += 1
 }
 
-Thread.sleep(forTimeInterval: 5)
+Thread.sleep(forTimeInterval: 1)
 
 print(a)

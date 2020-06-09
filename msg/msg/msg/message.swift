@@ -46,7 +46,7 @@ private func creatMessage(remotePort: mach_port_t, replyPort: mach_port_t, msgId
     let msg_base = mach_msg_base_t(header: msg_header, body: msg_body)
     
     var msg_ool = mach_msg_ool_descriptor_t()
-    var _data = data
+    let _data = data
     msg_ool.address = UnsafeMutableRawPointer(mutating: _data.valuePointer.baseAddress)
     msg_ool.size = mach_msg_size_t(data.count)
     msg_ool.copy = mach_msg_copy_options_t(MACH_MSG_VIRTUAL_COPY)       // shared vm space(copy on write)

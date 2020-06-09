@@ -9,7 +9,6 @@
 import Foundation
 
 public func lookAllVMRegions() {
-    
     let vm_address = UnsafeMutablePointer<mach_vm_address_t>.allocate(capacity: 1)
     let vm_info = UnsafeMutablePointer<Int32>.allocate(capacity: MemoryLayout<vm_region_basic_info_64>.size/4)
     
