@@ -21,11 +21,18 @@ public func ThreadDo(block: @escaping SwiftMethod) {
     }
     
     // --1-- 创建线程栈
-    var stack_size: vm_size_t = vm_page_size * 8
+    let stack_size: vm_size_t = vm_page_size * 10
     var stack_address: vm_address_t = 0
     let ret1 = vm_allocate(mach_task_self_, &stack_address, stack_size, VM_MEMORY_STACK | VM_FLAGS_ANYWHERE)
-    let ret1_1 = vm_protect(mach_task_self_, stack_address, stack_size, 1, VM_PROT_READ | VM_PROT_WRITE)
-    if ret1 != KERN_SUCCESS || ret1_1 != KERN_SUCCESS {
+    
+    // 本地线程储存(TSD)
+    let ret1_0 = vm_protect(mach_task_self_, stack_address, vm_page_size, 1, VM_PROT_READ | VM_PROT_WRITE)
+    // 防止栈溢出的保护页
+    let ret1_1 = vm_protect(mach_task_self_, stack_address+vm_page_size, vm_page_size, 1, VM_PROT_NONE)
+    // 栈页(stack)
+    let ret1_2 = vm_protect(mach_task_self_, stack_address+2*vm_page_size, stack_size, 1, VM_PROT_READ | VM_PROT_WRITE)
+    
+    if ret1 != KERN_SUCCESS || ret1_0 != KERN_SUCCESS || ret1_1 != KERN_SUCCESS || ret1_2 != KERN_SUCCESS {
         print("1 ==>: 线程栈创建失败")
         return
     }
@@ -79,7 +86,7 @@ public func ThreadDo(block: @escaping SwiftMethod) {
     state_64[16] = 0x0                                             // rip #pc
     
     // 设置TSD(线程私有数据) ???
-//    state_64[20] = UInt64(stack_address)
+//    state_64[20] = stack_address
     
     // 设置线程函数开始地址
     let _func_begin: ThreadStart = thread_start
